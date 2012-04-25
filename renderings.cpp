@@ -33,6 +33,14 @@ void Cube(int n){
 			addTriangle(Point3(-0.5 + (j+1) * step, 0.5 - i * step, 0.5),
 						Point3(-0.5 + j * step, 0.5 - (i+1) * step, 0.5),
 						Point3(-0.5 + (j+1) * step, 0.5 - (i+1) * step, 0.5));
+
+			// rear face
+			addTriangle(Point3(0.5 - j * step, 0.5 - i * step, -0.5),
+						Point3(0.5 - j * step, 0.5 - (i+1) * step, -0.5),
+						Point3(0.5 - (j+1) * step, 0.5 - i * step, -0.5));
+			addTriangle(Point3(0.5 - (j+1) * step, 0.5 - i * step, -0.5),
+						Point3(0.5 - j * step, 0.5 - (i+1) * step, -0.5),
+						Point3(0.5 - (j+1) * step, 0.5 - (i+1) * step, -0.5));
 		}
 	}
 	return;
