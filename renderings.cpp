@@ -19,31 +19,39 @@ extern void addTriangle(Point3 p1, Point3 p2, Point3 p3);
 // Window title
 const char* PROJECT_NAME = "Project 2 - Tessellation (Matthew MacEwan)";
 
+static void cubeFace(int n, Point3 ur, Point3 ul, Point3 bl);
 void Cube(int n){
 	// Your Cube code goes here
+	// front face
+	cubeFace(n, Point3(0.5,0.5,0.5), Point3(-0.5,0.5,0.5), Point3(-0.5,-0.5,0.5));
+	// rear face
+	cubeFace(n, Point3(-0.5,0.5,-0.5), Point3(0.5,0.5,-0.5), Point3(0.5,-0.5,-0.5));
+	// top face
+	cubeFace(n, Point3(-0.5,0.5,-0.5), Point3(-0.5,0.5,0.5), Point3(0.5,0.5,0.5));
+	// bottom face
+	cubeFace(n, Point3(0.5,-0.5,0.5), Point3(-0.5,-0.5,0.5), Point3(-0.5,-0.5,-0.5));
+	// left face
+	cubeFace(n, Point3(-0.5,-0.5,0.5), Point3(-0.5,0.5,0.5), Point3(-0.5,0.5,-0.5));
+	// right face
+	cubeFace(n, Point3(0.5,0.5,-0.5), Point3(0.5,0.5,0.5), Point3(0.5,-0.5,0.5));
+	return;
+}
+
+// Draw a single face of a cube given boundary points
+static void cubeFace(int n, Point3 ur, Point3 ul, Point3 bl) {
 	float step = 1.0 / n;
 	// iterate over rows
 	for (int i = 0; i < n; i++) {
 		// iterate over columns
 		for (int j = 0; j < n; j++) {
-			// front face
-			addTriangle(Point3(-0.5 + j * step, 0.5 - i * step, 0.5),
-						Point3(-0.5 + j * step, 0.5 - (i+1) * step, 0.5),
-						Point3(-0.5 + (j+1) * step, 0.5 - i * step, 0.5));
-			addTriangle(Point3(-0.5 + (j+1) * step, 0.5 - i * step, 0.5),
-						Point3(-0.5 + j * step, 0.5 - (i+1) * step, 0.5),
-						Point3(-0.5 + (j+1) * step, 0.5 - (i+1) * step, 0.5));
-
-			// rear face
-			addTriangle(Point3(0.5 - j * step, 0.5 - i * step, -0.5),
-						Point3(0.5 - j * step, 0.5 - (i+1) * step, -0.5),
-						Point3(0.5 - (j+1) * step, 0.5 - i * step, -0.5));
-			addTriangle(Point3(0.5 - (j+1) * step, 0.5 - i * step, -0.5),
-						Point3(0.5 - j * step, 0.5 - (i+1) * step, -0.5),
-						Point3(0.5 - (j+1) * step, 0.5 - (i+1) * step, -0.5));
+			Point3 a(ul + (j * step) * (ur - ul) + (i * step) * (bl - ul));
+			Point3 b(a + step * (bl - ul));
+			Point3 d(a + step * (ur - ul));
+			Point3 c(d + step * (bl - ul));
+			addTriangle(a, b, d);
+			addTriangle(b, c, d);
 		}
 	}
-	return;
 }
 
 void Cone(int n, int m){
