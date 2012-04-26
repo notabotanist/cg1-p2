@@ -18,7 +18,7 @@
 #//
 #////////////////////////////////////////////////////////////
 
-LDLIBS = -lglut -lGLU -lGL
+LDLIBS = -lglut -lGLU -lGL -lXext -lX11 -lm
 MACLDLIBS = -framework GLUT -framework OpenGL -framework Cocoa
 
 SOURCE_C = tessellation.cpp input.cpp renderings.cpp
@@ -40,6 +40,10 @@ tessellation: $(SOURCE_H) $(SOURCE_C)
 mac: $(SOURCE_H) $(SOURCE_C)
 	$(CXX) $(COMPILER_FLAGS) -c $(SOURCE_C)
 	$(CXX) $(MACLDLIBS) -o $(BINARY) $(OBJ_FILES)
+
+# Dependencies
+tessellation.o: input.o
+input.o: input.h resources.h
 
 clean:
 	rm -rf $(OBJ_FILES) $(BINARY) ptrepository SunWS_cache .sb ii_files core 2> /dev/null
