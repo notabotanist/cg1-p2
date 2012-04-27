@@ -119,7 +119,77 @@ void Cylinder(int n, int m){
 	return;
 }
 
+// recursively subdivide triangles to depth n for sphere rendering
+// of radius 0.5
+// Triangle vertices specified as offsets from origin
+static void subdivideTri(Vector3 a, Vector3 b, Vector3 c, int n) {
+	// base case
+	if (n <= 1) {
+		Point3 o(0,0,0);	// origin
+		a.normalize();
+		a *= 0.5;
+		b.normalize();
+		b *= 0.5;
+		c.normalize();
+		c *= 0.5;
+		addTriangle(o+a, o+b, o+c);
+		return;
+	}
+	// calculate edge midpoints
+	// don't normalize, that'll get taken care of at the bottom
+	Vector3 mab(a+b);
+	//mab.normalize();
+	mab *= 0.5;
+	Vector3 mbc(b+c);
+	//mbc.normalize();
+	mbc *= 0.5;
+	Vector3 mac(a+c);
+	//mac.normalize();
+	mac *= 0.5;
+	// subdivide!
+	subdivideTri(a, mab, mac, n-1);
+	subdivideTri(mab, b, mbc, n-1);
+	subdivideTri(mac, mbc, c, n-1);
+	subdivideTri(mbc, mac, mab, n-1);
+}
+
 void Sphere(int n){
 	// Your Sphere code goes here
+	// icosahedron vertices as per notes
+	float a = 2.0 / (1 + sqrt(5));
+	Vector3 v0(0, a, -1);
+	Vector3 v1(-a, 1, 0);
+	Vector3 v2(a, 1, 0);
+	Vector3 v3(0, a, 1);
+	Vector3 v4(-1, 0, a);
+	Vector3 v5(0, -a, 1);
+	Vector3 v6(1, 0, a);
+	Vector3 v7(1, 0, -a);
+	Vector3 v8(0, -a, -1);
+	Vector3 v9(-1,0,-a);
+	Vector3 v10(-a, -1, 0);
+	Vector3 v11(a, -1, 0);
+
+	// create triangles
+	subdivideTri(v0, v1, v2, n);
+	subdivideTri(v3, v2, v1, n);
+	subdivideTri(v3, v4, v5, n);
+	subdivideTri(v3, v5, v6, n);
+	subdivideTri(v0, v7, v8, n);
+	subdivideTri(v0, v8, v9, n);
+	subdivideTri(v5, v10, v11, n);
+	subdivideTri(v8, v11, v10, n);
+	subdivideTri(v1, v9, v4, n);
+	subdivideTri(v10, v4, v9, n);
+	subdivideTri(v2, v6, v7, n);
+	subdivideTri(v11, v7, v6, n);
+	subdivideTri(v3, v1, v4, n);
+	subdivideTri(v3, v6, v2, n);
+	subdivideTri(v0, v9, v1, n);
+	subdivideTri(v0, v2, v7, n);
+	subdivideTri(v8, v10, v9, n);
+	subdivideTri(v8, v7, v11, n);
+	subdivideTri(v5, v4, v10, n);
+	subdivideTri(v5, v11, v6, n);
 	return;
 }
