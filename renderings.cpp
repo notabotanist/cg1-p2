@@ -11,6 +11,8 @@
 //
 ////////////////////////////////////////////////////////////
 
+#include<cmath> // for trig
+#define PI 3.14159
 #include "resources.h"
 
 // addTriangle definition will be resolved by the tessellation.o object at link time
@@ -56,11 +58,64 @@ static void cubeFace(int n, Point3 ur, Point3 ul, Point3 bl) {
 
 void Cone(int n, int m){
 	// Your Cone code goes here
+	if (n < 3) {
+		// This is nonsense
+		return;
+	}
+	float circlestep = 2.0 * PI / n;
+	float edgestep = 1.0 / m;
+	for (float a=0; a < n; a++) {
+		float pX = 0.5 * cos(a*circlestep);
+		float pZ = 0.5 * sin(a*circlestep);
+		float qX = 0.5 * cos((a+1)*circlestep);
+		float qZ = 0.5 * sin((a+1)*circlestep);
+		Point3 apex(0,0.5,0);
+		Point3 botP(pX, -0.5, pZ);
+		Point3 botQ(qX, -0.5, qZ);
+
+		addTriangle(apex,apex + edgestep * (botQ-apex), apex + edgestep * (botP-apex));
+		addTriangle(Point3(0,-0.5,0),botP,botQ);
+		for (int i=1; i < m; i++) {
+			Point3 a(apex + (i * edgestep) * (botQ - apex));
+			Point3 b(a + edgestep * (botQ - apex));
+			Point3 d(apex + (i * edgestep) * (botP - apex));
+			Point3 c(d + edgestep * (botP - apex));
+			addTriangle(a, c, d);
+			addTriangle(a, b, c);
+		}
+	}
 	return;
 }
 
 void Cylinder(int n, int m){
 	// Your Cylinder code goes here
+	if (n < 3) {
+		// This is nonsense
+		return;
+	}
+	float circlestep = 2.0 * PI / n;
+	float edgestep = 1.0 / m;
+	for (float a=0; a < n; a++) {
+		float pX = 0.5 * cos(a*circlestep);
+		float pZ = 0.5 * sin(a*circlestep);
+		float qX = 0.5 * cos((a+1)*circlestep);
+		float qZ = 0.5 * sin((a+1)*circlestep);
+		Point3 topP(pX, 0.5, pZ);
+		Point3 topQ(qX, 0.5, qZ);
+		Point3 botP(pX, -0.5, pZ);
+		Point3 botQ(qX, -0.5, qZ);
+
+		addTriangle(Point3(0,0.5,0),topQ,topP);
+		addTriangle(Point3(0,-0.5,0),botP,botQ);
+		for (int i=0; i < m; i++) {
+			Point3 a(topQ + (i * edgestep) * (botQ - topQ));
+			Point3 b(a + edgestep * (botQ - topQ));
+			Point3 d(a + (topP - topQ));
+			Point3 c(d + edgestep * (botQ - topQ));
+			addTriangle(a, b, c);
+			addTriangle(a, c, d);
+		}
+	}
 	return;
 }
 
