@@ -31,11 +31,11 @@ void Cube(int n){
 	// top face
 	cubeFace(n, Point3(-0.5,0.5,-0.5), Point3(-0.5,0.5,0.5), Point3(0.5,0.5,0.5));
 	// bottom face
-	cubeFace(n, Point3(0.5,-0.5,0.5), Point3(-0.5,-0.5,0.5), Point3(-0.5,-0.5,-0.5));
+	cubeFace(n, Point3(0.5,-0.5,-0.5), Point3(0.5,-0.5,0.5), Point3(-0.5,-0.5,0.5));
 	// left face
 	cubeFace(n, Point3(-0.5,-0.5,0.5), Point3(-0.5,0.5,0.5), Point3(-0.5,0.5,-0.5));
 	// right face
-	cubeFace(n, Point3(0.5,0.5,-0.5), Point3(0.5,0.5,0.5), Point3(0.5,-0.5,0.5));
+	cubeFace(n, Point3(0.5,-0.5,-0.5), Point3(0.5,0.5,-0.5), Point3(0.5,0.5,0.5));
 	return;
 }
 
