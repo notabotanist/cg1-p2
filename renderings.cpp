@@ -24,6 +24,7 @@ const char* PROJECT_NAME = "Project 2 - Tessellation (Matthew MacEwan)";
 static void cubeFace(int n, Point3 ur, Point3 ul, Point3 bl);
 void Cube(int n){
 	// Your Cube code goes here
+	// The order matters to determine which diagonal the squares are divided on
 	// front face
 	cubeFace(n, Point3(0.5,0.5,0.5), Point3(-0.5,0.5,0.5), Point3(-0.5,-0.5,0.5));
 	// rear face
@@ -40,6 +41,7 @@ void Cube(int n){
 }
 
 // Draw a single face of a cube given boundary points
+// Note that the vertex ul will be a part of just one triangle.
 static void cubeFace(int n, Point3 ur, Point3 ul, Point3 bl) {
 	float step = 1.0 / n;
 	// iterate over rows
@@ -64,7 +66,7 @@ void Cone(int n, int m){
 	}
 	float circlestep = 2.0 * PI / n;
 	float edgestep = 1.0 / m;
-	for (float a=0; a < n; a++) {
+	for (int a=0; a < n; a++) {
 		float pX = 0.5 * cos(a*circlestep);
 		float pZ = 0.5 * sin(a*circlestep);
 		float qX = 0.5 * cos((a+1)*circlestep);
@@ -73,8 +75,11 @@ void Cone(int n, int m){
 		Point3 botP(pX, -0.5, pZ);
 		Point3 botQ(qX, -0.5, qZ);
 
+		// base sector
 		addTriangle(apex,apex + edgestep * (botQ-apex), apex + edgestep * (botP-apex));
+		// cap triangle
 		addTriangle(Point3(0,-0.5,0),botP,botQ);
+		// tesselate remaining trapezoids
 		for (int i=1; i < m; i++) {
 			Point3 a(apex + (i * edgestep) * (botQ - apex));
 			Point3 b(a + edgestep * (botQ - apex));
@@ -95,7 +100,7 @@ void Cylinder(int n, int m){
 	}
 	float circlestep = 2.0 * PI / n;
 	float edgestep = 1.0 / m;
-	for (float a=0; a < n; a++) {
+	for (int a=0; a < n; a++) {
 		float pX = 0.5 * cos(a*circlestep);
 		float pZ = 0.5 * sin(a*circlestep);
 		float qX = 0.5 * cos((a+1)*circlestep);
@@ -105,8 +110,10 @@ void Cylinder(int n, int m){
 		Point3 botP(pX, -0.5, pZ);
 		Point3 botQ(qX, -0.5, qZ);
 
+		// top and bottom sectors, respectively
 		addTriangle(Point3(0,0.5,0),topQ,topP);
 		addTriangle(Point3(0,-0.5,0),botP,botQ);
+		// tesselate side quad-strips
 		for (int i=0; i < m; i++) {
 			Point3 a(topQ + (i * edgestep) * (botQ - topQ));
 			Point3 b(a + edgestep * (botQ - topQ));
@@ -135,8 +142,8 @@ static void subdivideTri(Vector3 a, Vector3 b, Vector3 c, int n) {
 		addTriangle(o+a, o+b, o+c);
 		return;
 	}
-	// calculate edge midpoints
-	// don't normalize, that'll get taken care of at the bottom
+	// calculate directions to edge midpoints
+	// don't normalize, that'll get taken care of at the bottom of recursion
 	Vector3 mab(a+b);
 	//mab.normalize();
 	mab *= 0.5;
